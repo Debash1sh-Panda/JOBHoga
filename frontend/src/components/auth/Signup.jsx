@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import Navbar from "../shared/Navbar";
 import { Label } from "@/components/ui/label";
@@ -16,22 +16,37 @@ function Signup() {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm();
 
   const { loading } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const file = watch("file"); // Watch the file input
 
   const onSubmit = async (data) => {
-    // console.log(data)
+    const formData = new FormData();
+
+    // Append form fields to FormData
+    formData.append("fullname", data.fullname);
+    formData.append("email", data.email);
+    formData.append("phone", data.phone);
+    formData.append("password", data.password);
+    formData.append("role", data.role);
+
+    if (file && file.length > 0) {
+      formData.append("file", file[0]); // Append the file
+    }
+
     try {
       dispatch(setLoading(true));
-      const res = await axios.post(`${BASE_URL_API_USER}/register`, data, {
+      const res = await axios.post(`${BASE_URL_API_USER}/register`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
         withCredentials: true,
       });
+
       if (res.data.success) {
         navigate("/");
         toast.success(res.data.message);
@@ -41,6 +56,12 @@ function Signup() {
     } finally {
       dispatch(setLoading(false));
     }
+  };
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -69,9 +90,9 @@ function Signup() {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                 {...register("fullname", { required: "Name is required" })}
               />
-              {errors.name && (
+              {errors.fullname && (
                 <p className="text-red-500 text-sm mt-1">
-                  {errors.name.message}
+                  {errors.fullname.message}
                 </p>
               )}
             </div>
@@ -130,19 +151,28 @@ function Signup() {
               >
                 Password
               </label>
-              <input
-                id="password"
-                type="password"
-                placeholder="[A-Z a-z 0-n @-#]"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                {...register("password", {
-                  required: "Password is required",
-                  minLength: {
-                    value: 6,
-                    message: "Password must be at least 6 characters long",
-                  },
-                })}
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="[A-Z a-z 0-n @-#]"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  {...register("password", {
+                    required: "Password is required",
+                    minLength: {
+                      value: 6,
+                      message: "Password must be at least 6 characters long",
+                    },
+                  })}
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 px-3 flex items-center text-gray-700"
+                  onClick={togglePasswordVisibility}
+                >
+                  {showPassword ? "🙈" : "👁️"}
+                </button>
+              </div>
               {errors.password && (
                 <p className="text-red-500 text-sm mt-1">
                   {errors.password.message}
@@ -175,13 +205,11 @@ function Signup() {
               </div>
 
               <div className="flex items-center gap-2 ml-14">
-                <Label>Profile</Label>
+                <Label>Photo</Label>
                 <Input
                   accept="image/*"
                   type="file"
-                  {...register("profile", {
-                    // required: "Profile image is required",
-                  })}
+                  {...register("file")}
                   className="cursor-pointer"
                 />
               </div>
@@ -190,7 +218,7 @@ function Signup() {
               {loading ? (
                 <button className="w-full px-3 py-2 text-white font-bold bg-gradient-to-r from-black to-red-500 rounded-md hover:from-gray-600 hover:to-red-400 focus:outline-none focus:ring-2 focus:ring-blue-400 flex items-center justify-center">
                   <Loader2 className="animate-spin mr-2" />
-                  Processing...
+                  Please Wait...
                 </button>
               ) : (
                 <button

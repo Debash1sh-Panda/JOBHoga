@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import axios from "axios";
 import { BASE_URL_API_USER } from "../../utils/baseUrl";
 import { useDispatch, useSelector } from "react-redux";
-import { setLoading } from "../../redux/authSlice";
+import { setLoading, setUser } from "../../redux/authSlice";
 import { Loader2 } from "lucide-react";
 
 function Login() {
@@ -34,6 +34,7 @@ function Login() {
       });
 
       if (res.data.success) {
+        dispatch(setUser(res.data.user));
         navigate("/");
         toast(res.data.message);
       }
@@ -140,7 +141,7 @@ function Login() {
               {loading ? (
                 <button className="w-full px-3 py-2 text-white font-bold bg-gradient-to-r from-black to-red-500 rounded-md hover:from-gray-600 hover:to-red-400 focus:outline-none focus:ring-2 focus:ring-blue-400 flex items-center justify-center">
                   <Loader2 className="animate-spin mr-2" />
-                  Processing...
+                  Please Wait...
                 </button>
               ) : (
                 <button

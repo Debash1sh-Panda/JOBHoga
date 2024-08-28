@@ -6,5 +6,4 @@ const storage = multer.memoryStorage();
 // Create a middleware for handling single file uploads
 const singleUpload = multer({ storage }).single("file");
 
-// Export the middleware correctly
-module.exports = {singleUpload};
+module.exports = { singleUpload };

@@ -104,14 +104,23 @@ exports.allJobDetails = async (req, res) => {
 exports.jobDetailsById = async (req, res) => {
   try {
     const jobId = req.params.id;
-    const job = await Job.findById(jobId);
+    const job = await Job.findById(jobId).populate({
+      path: "application"
+    });
     if (!job) {
       return res.status(404).json({
         message: "Job Not Found",
         success: false,
       });
     }
-    return res.status(200).json({ job, success: true });
+
+    if (job) {
+      return res.status(404).json({
+        message: "Job Already Applied",
+        success: false,
+      });
+    }
+    return res.status(200).json({ job, success: true, message: "Job Applied Successfully" });
   } catch (error) {
     return res.status(500).json({
         message: "Server Error",
