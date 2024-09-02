@@ -14,7 +14,7 @@ function Footer() {
             </h1>
             <p className="text-sm">
               © {currentYear} JobHoga{" "}
-              Company. All rights reserved.
+              Company. All rights reserved <span className=" text-blue-700">@debasishpanda.</span>
             </p>
           </div>
 

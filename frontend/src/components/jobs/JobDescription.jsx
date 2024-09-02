@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../shared/Navbar";
 import { useParams } from "react-router-dom";
-import { BASE_URL_JOB } from "../../utils/baseUrl";
+import { BASE_URL_API_APPLICATION, BASE_URL_JOB } from "../../utils/baseUrl";
 import { setSingleJobs } from "../../redux/jobSlice";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -10,6 +10,7 @@ import { toast } from "sonner";
 function JobDescription() {
   const params = useParams();
   const jobId = params.id;
+  console.log(jobId)
   const { singleJob } = useSelector((store) => store.job);
   const { user } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
@@ -21,17 +22,17 @@ function JobDescription() {
 
   const applyJobHandler = async () => {
     try {
-      const res = await axios.get(`${BASE_URL_JOB}/jobDetails/${jobId}`, {
+      const res = await axios.get(`${BASE_URL_API_APPLICATION}/apply/${jobId}`, {
         withCredentials: true,
       });
       console.log(res.data)
       if (res.data.success) {
         setIsApplied(true);
-        const updateSingleJob = {
+        const updatedSingleJob = {
           ...singleJob,
           application: [...singleJob.application, { applicant: user?._id }],
         };
-        dispatch(setSingleJobs(updateSingleJob));
+        dispatch(setSingleJobs(updatedSingleJob));
         toast.success(res.data.message);
       }
     } catch (error) {
@@ -41,22 +42,30 @@ function JobDescription() {
   };
 
   useEffect(() => {
-    const fetchSingleJobs = async () => {
-      try {
-        const res = await axios.get(`${BASE_URL_JOB}/jobDetails/${jobId}`, {
-          withCredentials: true,
-        });
-        // console.log(res);
-        if (res.data.success) {
-          dispatch(setSingleJobs(res.data.job));
-          setIsApplied(res.data.job.application.some(application=>application.applicant == user?._id))
-        }
-      } catch (error) {
-        console.log(error);
+  const fetchSingleJobs = async () => {
+
+    try {
+      const res = await axios.get(`${BASE_URL_JOB}/jobDetails/${jobId}`, {
+        withCredentials: true,
+      });
+
+      if (res.data.success) {
+        dispatch(setSingleJobs(res.data.job));
+        setIsApplied(
+          res.data.job.application.some(
+            (application) => application.applicant === user?._id
+          )
+        );
       }
-    };
-    fetchSingleJobs();
-  }, [jobId, dispatch, user?._id]);
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to fetch job details");
+    }
+  };
+
+  fetchSingleJobs();
+}, [jobId, dispatch, user?._id]);
+
 
   return (
     <div>

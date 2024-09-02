@@ -25,7 +25,7 @@ function Job({job}) {
           <Avatar>
             <AvatarImage
               className="w-16 h-14"
-              src="https://tse2.mm.bing.net/th?id=OIP.OFInEkY3zHqXMrjRPWzgtgHaGL&pid=Api&P=0&h=180"
+              src={ job?.companyId?.logo ? job?.companyId?.logo : "https://tse2.mm.bing.net/th?id=OIP.OFInEkY3zHqXMrjRPWzgtgHaGL&pid=Api&P=0&h=180"}
             />
           </Avatar>
         </button>
@@ -45,19 +45,19 @@ function Job({job}) {
           className={"text-blue-700 font-bold bg-gradient-to-r from-gray-300 to-red-200 rounded-md p-1"}
           variant="ghost"
         >
-          Positions: {job?.position}
+         Position: {job?.position}
         </p>
         <p
           className={"text-blue-700 font-bold bg-gradient-to-r from-gray-300 to-red-200 rounded-md p-1"}
           variant="ghost"
         >
-          Job-Type:<br/>{job?.jobType}
+          {job?.jobType}
         </p>
         <p
           className={"text-blue-700 font-bold bg-gradient-to-r from-gray-300 to-red-200 rounded-md p-1"}
           variant="ghost"
         >
-          Salary: {job?.salary}
+          {job?.salary}
         </p>
       </div>
       <div className="flex items-center gap-4 mt-4">

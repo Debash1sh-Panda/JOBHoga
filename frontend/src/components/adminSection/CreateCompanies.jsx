@@ -34,7 +34,7 @@ function CreateCompanies() {
         navigate(`/admin/companies/create/${comId}`)
       }
     } catch (error) {
-      toast.success(error.response.data.message);
+      toast.success(error?.response?.data?.message);
     }
   };
 

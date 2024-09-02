@@ -40,7 +40,7 @@ function Login() {
       }
     } catch (error) {
       console.error("Login error: ", error);
-      toast(error.response?.data?.message || "An unexpected error occurred.");
+      toast(error?.response?.data?.message || "An unexpected error occurred.");
     } finally {
       dispatch(setLoading(false));
     }
@@ -123,7 +123,7 @@ function Login() {
                   className="cursor-pointer"
                   defaultChecked
                 />
-                <Label htmlFor="r1">Student</Label>
+                <Label htmlFor="r1" className="cursor-pointer">Student</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Input
@@ -134,7 +134,7 @@ function Login() {
                   {...register("role", { required: "Role is required" })}
                   className="cursor-pointer"
                 />
-                <Label htmlFor="r2">Recruiter</Label>
+                <Label htmlFor="r2" className="cursor-pointer">Recruiter</Label>
               </div>
             </RadioGroup>
             <div className="mb-6">

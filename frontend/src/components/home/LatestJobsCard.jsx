@@ -3,11 +3,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 function LatestJobsCard({job}) {
-//   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   return (
     <div
-    //   onClick={() => navigate(`/description/${job._id}`)}
+      onClick={() => navigate(`/job/description/${job._id}`)}
       className="p-5 rounded-md shadow-xl bg-gradient-to-r to-gray-200 from-red-100 border border-gray-100 cursor-pointer"
     >
       <div>

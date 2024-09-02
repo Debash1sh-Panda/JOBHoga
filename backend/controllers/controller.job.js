@@ -10,7 +10,7 @@ exports.createJob = async (req, res) => {
       salary,
       location,
       jobType,
-      experience,
+      experienceLevel,
       position,
       companyId,
     } = req.body;
@@ -23,7 +23,7 @@ exports.createJob = async (req, res) => {
       !salary ||
       !location ||
       !jobType ||
-      !experience ||
+      !experienceLevel ||
       !position ||
       !companyId
     ) {
@@ -40,7 +40,7 @@ exports.createJob = async (req, res) => {
       salary,
       location,
       jobType,
-      experienceLevel: experience,
+      experienceLevel: experienceLevel,
       position,
       companyId: companyId,
       created_by: userId,
@@ -53,9 +53,9 @@ exports.createJob = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({
-        message: "Server Error",
-        success: false,
-      });
+      message: "Server Error",
+      success: false,
+    });
   }
 };
 
@@ -65,7 +65,7 @@ exports.allJobDetails = async (req, res) => {
     const keyword = req.query.keyword || "";
     const query = {
       $or: [
-        { title: { $regex: keyword, $options: "i" } },
+        { title: { $regex: keyword, $options: "i"} },
         { description: { $regex: keyword, $options: "i" } },
       ],
     };
@@ -105,8 +105,10 @@ exports.jobDetailsById = async (req, res) => {
   try {
     const jobId = req.params.id;
     const job = await Job.findById(jobId).populate({
-      path: "application"
+      path: "application",
     });
+
+    // Check if the job exists
     if (!job) {
       return res.status(404).json({
         message: "Job Not Found",
@@ -114,18 +116,17 @@ exports.jobDetailsById = async (req, res) => {
       });
     }
 
-    if (job) {
-      return res.status(404).json({
-        message: "Job Already Applied",
-        success: false,
-      });
-    }
-    return res.status(200).json({ job, success: true, message: "Job Applied Successfully" });
+    // Return the job details if found
+    return res.status(200).json({
+      job,
+      success: true,
+      message: "Job Details Retrieved Successfully",
+    });
   } catch (error) {
     return res.status(500).json({
-        message: "Server Error",
-        success: false,
-      });
+      message: "Server Error",
+      success: false,
+    });
   }
 };
 
@@ -133,7 +134,10 @@ exports.jobDetailsById = async (req, res) => {
 exports.adminsJob = async (req, res) => {
   try {
     const adminId = req.id;
-    const jobs = await Job.find({ created_by: adminId });
+    const jobs = await Job.find({ created_by: adminId }).populate({
+      path: "companyId",
+      createdAt: -1,
+    });
     if (!jobs) {
       return res.status(404).json({
         message: "Job Not Found",
@@ -148,8 +152,27 @@ exports.adminsJob = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({
-        message: "Server Error",
-        success: false,
-      });
+      message: "Server Error",
+      success: false,
+    });
+  }
+};
+
+exports.deleteJob = async (req, res) => {
+  try {
+    const jobId = req.params.id;
+    console.log(jobId);
+    const deleteJob = await Job.findByIdAndDelete(jobId);
+
+    return res.status(200).json({
+      message: "Job Successfully Deleted",
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Server Error",
+      success: false,
+    });
   }
 };
