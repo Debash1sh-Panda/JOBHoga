@@ -11,7 +11,7 @@ JobApp.use(express.json());
 JobApp.use(express.urlencoded({extended: true}));
 JobApp.use(cookieparser());
 JobApp.use(cors({
-    origin: 'http://localhost:5173',
+    origin: "https://job-hoga-dl452xvey-debash1sh-pandas-projects.vercel.app",
     credentials: true,
   }));
 
