@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const isAuthenticated = async (req, res, next) => {
     try {
         const token = req.cookies.token;
+        // console.log(token)
 
         if (!token) {
             return res.status(401).json({
@@ -11,7 +12,8 @@ const isAuthenticated = async (req, res, next) => {
             })
         }
 
-        const decode = await jwt.verify(token, process.env.SECRET_TOKEN_KEY);
+        const decode = jwt.verify(token, process.env.SECRET_TOKEN_KEY);
+        // console.log("decode", decode)
 
         if (!decode) {
             return res.status(401).json({
