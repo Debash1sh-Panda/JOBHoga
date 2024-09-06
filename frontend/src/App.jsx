@@ -15,7 +15,7 @@ import AdminJob from "./components/adminSection/AdminJob";
 import CreateJobDetails from "./components/adminSection/CreateJobDetails";
 import CreateJob from "./components/adminSection/CreateJob";
 import Applicants from "./components/adminSection/Applicants";
-import ProtectedRoute from "./utils/protectedRoute";
+import ProtectedRoute from "./utils/ProtectedRoute";
 
 const appRouter = createBrowserRouter([
   //client
