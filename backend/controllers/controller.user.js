@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const getDataUri = require("../dataUri.js");
 const cloudinary = require("../cloudinary.js");
+require('dotenv').config();
 
 exports.register = async (req, res) => {
   try {
@@ -115,7 +116,7 @@ exports.login = async (req, res) => {
       .cookie("token", token, {
         maxAge: 1 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       })
       .json({
