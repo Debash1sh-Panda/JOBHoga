@@ -14,6 +14,7 @@ JobApp.use(cors({
     origin: "https://job-hoga-3rgjhif12-debash1sh-pandas-projects.vercel.app",
     credentials: true,
   }));
+  JobApp.options('*', cors());
 
 //database
 require('./database').databaseConnection();
